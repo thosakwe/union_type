@@ -4,7 +4,7 @@ homepage: "https://github.com/thosakwe/union_type.git"
 environment:
   sdk: ">=1.19.0"
 name: "union_type"
-version: "1.0.0"
+version: "1.0.0+1"
 dependencies: 
   matcher: "^0.12.0+2"
 dev_dependencies: 

@@ -16,7 +16,7 @@ class UnionType {
 
   const UnionType(this.name, {this.types: const []});
 
-  /// Returns true if [value] can matched to any type in [types].
+  /// Returns `true` if [value] can matched to any type in [types].
   bool check(value) {
     if (types.contains(value.runtimeType)) return true;
 
@@ -34,6 +34,9 @@ class UnionType {
 
     return false;
   }
+
+  /// Returns `true` if every item in [iterable] can be matched to a type in [types].
+  bool checkAll(Iterable iterable) => iterable.every(check);
 
   /// Throws a [TypeError] if [check] returns `false` for [value].
   void enforce(value) {
@@ -107,6 +110,9 @@ class UnionTypeException implements Exception {
 /// Asserts that the given value matches the given [UnionType].
 Matcher isUnion(UnionType type) => new _UnionTypeMatcher(type);
 
+/// Asserts that all of the given values match the given [UnionType].
+Matcher allAreUnion(UnionType type) => new _AllUnionTypeMatcher(type);
+
 class _UnionTypeMatcher extends Matcher {
   final UnionType type;
 
@@ -120,6 +126,21 @@ class _UnionTypeMatcher extends Matcher {
 
   @override
   bool matches(item, Map matchState) => type.check(item);
+}
+
+class _AllUnionTypeMatcher extends Matcher {
+  final UnionType type;
+
+  _AllUnionTypeMatcher(this.type);
+
+  @override
+  Description describe(Description description) {
+    return description
+        .add(' should all be an instances of the union type ${type.name}');
+  }
+
+  @override
+  bool matches(item, Map matchState) => type.checkAll(item);
 }
 
 class _UnionTypeError extends TypeError {

@@ -1,6 +1,6 @@
 # union_type
 
-[![version 1.0.0](https://img.shields.io/badge/pub-v1.0.0-brightgreen.svg)](https://pub.dartlang.org/packages/union_type)
+[![version 1.0.0+1](https://img.shields.io/badge/pub-v1.0.0+1-brightgreen.svg)](https://pub.dartlang.org/packages/union_type)
 [![build status](https://travis-ci.org/thosakwe/union_type.svg)](https://travis-ci.org/thosakwe/union_type)
 
 Dart union type library. This library currently uses `dart:mirrors`.

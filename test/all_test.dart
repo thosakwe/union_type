@@ -13,10 +13,14 @@ main() {
 }
 
 check() {
+  expect(1, isUnion(PRIMITIVE));
+  expect(null, isUnion(PRIMITIVE));
   expect(PRIMITIVE.check(1), isTrue);
   expect(PRIMITIVE.check(null), isTrue);
   expect(PRIMITIVE.check({}), isFalse);
   expect(PRIMITIVE.check([1, 2, 3]), isFalse);
+  expect(1, isUnion(PRIMITIVE_OR_TYPE));
+  expect(String, isUnion(PRIMITIVE_OR_TYPE));
   expect(PRIMITIVE_OR_TYPE.check(1), isTrue);
   expect(PRIMITIVE_OR_TYPE.check(String), isTrue);
   expect(PRIMITIVE_OR_TYPE.check([4, 5, 6]), isFalse);
