@@ -1,0 +1,9 @@
+author: "Tobe O <thosakwe@gmail.com>"
+description: "Dart union type library."
+homepage: "https://github.com/thosakwe/union_type.git"
+name: "union_type"
+version: "1.0.0"
+dependencies: 
+  matcher: "^0.12.0+2"
+dev_dependencies: 
+  test: "^0.12.17+3"
