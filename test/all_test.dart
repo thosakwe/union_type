@@ -15,6 +15,7 @@ main() {
 check() {
   expect(1, isUnion(PRIMITIVE));
   expect(null, isUnion(PRIMITIVE));
+  expect([1, 2, '3', #four, 5, null], allAreUnion(PRIMITIVE));
   expect(PRIMITIVE.check(1), isTrue);
   expect(PRIMITIVE.check(null), isTrue);
   expect(PRIMITIVE.check({}), isFalse);
