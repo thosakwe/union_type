@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:union_type/matchers.dart';
 import 'package:union_type/union_type.dart';
 
 const UnionType PRIMITIVE = const UnionType('Primitive',
@@ -13,6 +14,7 @@ main() {
 }
 
 check() {
+  expect(PRIMITIVE.check({}), isFalse);
   expect(1, isUnion(PRIMITIVE));
   expect(null, isUnion(PRIMITIVE));
   expect([1, 2, '3', #four, 5, null], allAreUnion(PRIMITIVE));
@@ -42,12 +44,14 @@ enforce() {
 
 list() {
   final list = new TypedList(PRIMITIVE);
+  expect(list is List, isTrue);
   list.add('String');
   list.addAll([1, 2, '3', #four, null]);
 
-  expect(() {
-    list.add({});
-  }, throwsA(new isInstanceOf<TypeError>()));
+  expect(list[4], #four);
+  print(list);
+
+  expect(() => list.add({}), throwsA(new isInstanceOf<TypeError>()));
 
   expect(() {
     list.addAll([

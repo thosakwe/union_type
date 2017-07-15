@@ -1,8 +1,9 @@
 /// Dart union type library.
 library union_type;
 
-import 'dart:mirrors';
-import 'package:matcher/matcher.dart';
+import 'dart:collection';
+import 'src/is_type_no_mirrors.dart'
+    if (dart.library.io) 'src/is_type_mirrors.dart';
 
 /// Represents a union of multiple types.
 class UnionType {
@@ -26,7 +27,7 @@ class UnionType {
       } else if (type is Type) {
         if (value.runtimeType == type)
           return true;
-        else if (reflect(value).type.isAssignableTo(reflectType(type)))
+        else if (isInstanceOf(value, type))
           return true;
       } else
         throw new UnionTypeException('$type is not a type.');
@@ -52,7 +53,7 @@ class UnionType {
 }
 
 /// A list that asserts that its members match a given [UnionType].
-class TypedList {
+class TypedList extends ListBase implements List {
   final List _items = [];
   final UnionType type;
 
@@ -63,14 +64,15 @@ class TypedList {
   factory TypedList.from(UnionType type, List list) =>
       new TypedList(type)..addAll(list);
 
-  get first => _items.first;
+  @override
+  int get length => _items.length;
 
-  List get items => _items;
+  @override
+  void set length(int value) {
+    _items.length = value;
+  }
 
-  Iterator get iterator => _items.iterator;
-
-  get last => _items.last;
-
+  @override
   void operator []=(int index, value) {
     type.enforce(value);
     _items[index] = value;
@@ -78,23 +80,17 @@ class TypedList {
 
   operator [](int index) => _items[index];
 
+  @override
   void add(item) {
     type.enforce(item);
     _items.add(item);
   }
 
+  @override
   void addAll(Iterable iterable) {
     type.enforceAll(iterable);
     _items.addAll(iterable);
   }
-
-  bool contains(element) => _items.contains(element);
-
-  elementAt(int index) => _items.elementAt(index);
-
-  String join([String separator]) => _items.join(separator);
-
-  bool remove(item) => _items.remove(item);
 }
 
 /// Thrown when an invalid object is used as a type.
@@ -105,42 +101,6 @@ class UnionTypeException implements Exception {
 
   @override
   String toString() => 'UnionTypeException: $message';
-}
-
-/// Asserts that the given value matches the given [UnionType].
-Matcher isUnion(UnionType type) => new _UnionTypeMatcher(type);
-
-/// Asserts that all of the given values match the given [UnionType].
-Matcher allAreUnion(UnionType type) => new _AllUnionTypeMatcher(type);
-
-class _UnionTypeMatcher extends Matcher {
-  final UnionType type;
-
-  _UnionTypeMatcher(this.type);
-
-  @override
-  Description describe(Description description) {
-    return description
-        .add(' should be an instance of the union type ${type.name}');
-  }
-
-  @override
-  bool matches(item, Map matchState) => type.check(item);
-}
-
-class _AllUnionTypeMatcher extends Matcher {
-  final UnionType type;
-
-  _AllUnionTypeMatcher(this.type);
-
-  @override
-  Description describe(Description description) {
-    return description
-        .add(' should all be an instances of the union type ${type.name}');
-  }
-
-  @override
-  bool matches(item, Map matchState) => type.checkAll(item);
 }
 
 class _UnionTypeError extends TypeError {
